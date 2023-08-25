@@ -1,75 +1,92 @@
-#include "custom_shell_header.h"
-
-char **_duplicate_environment(void);
-void free_custom_environment(void);
-char **_find_custom_environment_variable(const char *variable_name);
+#include "shell.h"
 
 /**
- * _duplicate_environment - Creates a duplicate of the custom environment.
- *
- * Return: If an error occurs - NULL.
- *         Otherwise - a double pointer to the duplicated environment.
+ * _myenv - prints the current environment
+ * @info: Structure containing potential arguments. Used to maintain
+ *          constant function prototype.
+ * Return: Always 0
  */
-char **_duplicate_environment(void)
+int _myenv(info_t *info)
 {
-	char **new_custom_environment;
-	size_t environment_size;
-	int index;
-
-	for (environment_size = 0; custom_environment[environment_size]; environment_size++)
-		;
-
-	new_custom_environment = malloc(sizeof(char *) * (environment_size + 1));
-	if (!new_custom_environment)
-		return NULL;
-
-	for (index = 0; custom_environment[index]; index++)
-	{
-		new_custom_environment[index] = malloc(_strlen(custom_environment[index]) + 1);
-
-		if (!new_custom_environment[index])
-		{
-			for (index--; index >= 0; index--)
-				free(new_custom_environment[index]);
-			free(new_custom_environment);
-			return NULL;
-		}
-		_strcpy(new_custom_environment[index], custom_environment[index]);
-	}
-	new_custom_environment[index] = NULL;
-
-	return new_custom_environment;
+	print_list_str(info->env);
+	return (0);
 }
 
 /**
- * free_custom_environment - Frees the duplicated custom environment.
+ * _getenv - gets the value of an environ variable
+ * @info: Structure containing potential arguments. Used to maintain
+ * @name: env var name
+ *
+ * Return: the value
  */
-void free_custom_environment(void)
+char *_getenv(info_t *info, const char *name)
 {
-	int index;
+	list_t *node = info->env;
+	char *p;
 
-	for (index = 0; custom_environment[index]; index++)
-		free(custom_environment[index]);
-	free(custom_environment);
+	while (node)
+	{
+		p = starts_with(node->str, name);
+		if (p && *p)
+			return (p);
+		node = node->next;
+	}
+	return (NULL);
 }
 
 /**
- * _find_custom_environment_variable - Gets an environmental variable from the custom environment.
- * @variable_name: The name of the environmental variable to find.
- *
- * Return: If the environmental variable does not exist - NULL.
- *         Otherwise - a pointer to the environmental variable.
+ * _mysetenv - Initialize a new environment variable,
+ *             or modify an existing one
+ * @info: Structure containing potential arguments. Used to maintain
+ *        constant function prototype.
+ *  Return: Always 0
  */
-char **_find_custom_environment_variable(const char *variable_name)
+int _mysetenv(info_t *info)
 {
-	int index, length;
-
-	length = _strlen(variable_name);
-	for (index = 0; custom_environment[index]; index++)
+	if (info->argc != 3)
 	{
-		if (_strncmp(variable_name, custom_environment[index], length) == 0)
-			return &custom_environment[index];
+		_eputs("Incorrect number of arguements\n");
+		return (1);
 	}
+	if (_setenv(info, info->argv[1], info->argv[2]))
+		return (0);
+	return (1);
+}
 
-	return NULL;
+/**
+ * _myunsetenv - Remove an environment variable
+ * @info: Structure containing potential arguments. Used to maintain
+ *        constant function prototype.
+ *  Return: Always 0
+ */
+int _myunsetenv(info_t *info)
+{
+	int i;
+
+	if (info->argc == 1)
+	{
+		_eputs("Too few arguements.\n");
+		return (1);
+	}
+	for (i = 1; i <= info->argc; i++)
+		_unsetenv(info, info->argv[i]);
+
+	return (0);
+}
+
+/**
+ * populate_env_list - populates env linked list
+ * @info: Structure containing potential arguments. Used to maintain
+ *          constant function prototype.
+ * Return: Always 0
+ */
+int populate_env_list(info_t *info)
+{
+	list_t *node = NULL;
+	size_t i;
+
+	for (i = 0; environ[i]; i++)
+		add_node_end(&node, environ[i], 0);
+	info->env = node;
+	return (0);
 }
