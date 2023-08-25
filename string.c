@@ -1,75 +1,103 @@
-#include "shell.h"
+#include "holberton.h"
 
 /**
- * _strlen - returns the length of a string
- * @s: the string whose length to check
+ * _strcmpdir - Compares strings to find a directory.
  *
- * Return: integer length of string
- */
-int _strlen(char *s)
+ * @s1: First string.
+ * @s2: Second string.
+ *
+ * Return: 0 if match, non-zero if otherwise.
+ **/
+int _strcmpdir(char *s1, char *s2)
 {
 	int i = 0;
 
-	if (!s)
-		return (0);
-
-	while (*s++)
-		i++;
-	return (i);
-}
-
-/**
- * _strcmp - performs lexicogarphic comparison of two strangs.
- * @s1: the first strang
- * @s2: the second strang
- *
- * Return: negative if s1 < s2, positive if s1 > s2, zero if s1 == s2
- */
-int _strcmp(char *s1, char *s2)
-{
-	while (*s1 && *s2)
+	while (*s2 != '\0' && *s1 != '\0' && *s1 == *s2)
 	{
-		if (*s1 != *s2)
-			return (*s1 - *s2);
+		if (i == 3)
+			break;
+		i++;
 		s1++;
 		s2++;
 	}
-	if (*s1 == *s2)
-		return (0);
-	else
-		return (*s1 < *s2 ? -1 : 1);
+
+	return (*s1 - *s2);
 }
 
 /**
- * starts_with - checks if needle starts with haystack
- * @haystack: string to search
- * @needle: the substring to find
+ * charput - Writes the character like putchar.
+ * @c: The character to print.
  *
- * Return: address of next char of haystack or NULL
+ * Return: On success, 1.
+ * On error, -1 is returned, and errno is set appropriately.
  */
-char *starts_with(const char *haystack, const char *needle)
+int charput(char c)
 {
-	while (*needle)
-		if (*needle++ != *haystack++)
-			return (NULL);
-	return ((char *)haystack);
+	return (write(1, &c, 1));
 }
 
 /**
- * _strcat - concatenates two strings
- * @dest: the destination buffer
- * @src: the source buffer
- *
- * Return: pointer to destination buffer
+ * place - Prints a string.
+ * @str: The string to be printed.
  */
-char *_strcat(char *dest, char *src)
+void place(char *str)
 {
-	char *ret = dest;
+	while (*str != '\0')
+	{
+		charput(*str);
+		str++;
+	}
+}
 
-	while (*dest)
-		dest++;
-	while (*src)
-		*dest++ = *src++;
-	*dest = *src;
-	return (ret);
+/**
+ * _strlen - Computes the length of a string.
+ * @str: The string.
+ * Return: Length of the string.
+ */
+int _strlen(char *str)
+{
+	int length;
+
+	for (length = 0; str[length] != '\0'; length++)
+		;
+
+	return (length);
+}
+
+/**
+ * str_concat - Concatenates two strings.
+ * @s1: First string.
+ * @s2: Second string.
+ * Return: Concatenated string, or NULL on failure.
+ */
+char *str_concat(char *s1, char *s2)
+{
+	char *result;
+	int len_s1, len_s2, i, j;
+
+	if (s1 == NULL)
+		s1 = "";
+
+	if (s2 == NULL)
+		s2 = "";
+
+	len_s1 = _strlen(s1);
+	len_s2 = _strlen(s2);
+
+	result = malloc((len_s1 + len_s2 + 1) * sizeof(char));
+
+	if (result == NULL)
+		return (NULL);
+
+	for (i = 0; i < len_s1; i++)
+	{
+		result[i] = s1[i];
+	}
+
+	for (j = len_s1, i = 0; i <= len_s2; j++, i++)
+	{
+		result[j] = s2[i];
+	}
+
+	return (result);
 }
