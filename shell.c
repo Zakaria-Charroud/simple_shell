@@ -1,50 +1,89 @@
 #include "shell.h"
-/**
-* main - carries out the read, execute then print output loop
-* @ac: argument count
-* @av: argument vector
-* @envp: environment vector
-*
-* Return: 0
-*/
 
-int main(int ac, char **av, char *envp[])
+/**
+ * sig_handler - checks if Ctrl C is pressed
+ * @sig_num: int
+ */
+void sig_handler(int sig_num)
 {
-	char *line = NULL, *pathcommand = NULL, *path = NULL;
-	size_t bufsize = 0;
-	ssize_t linesize = 0;
-	char **command = NULL, **paths = NULL;
-	(void)envp, (void)av;
-	if (ac < 1)
-		return (-1);
-	signal(SIGINT, handle_signal);
-	while (1)
+	if (sig_num == SIGINT)
 	{
-		free_buffers(command);
-		free_buffers(paths);
-		free(pathcommand);
-		prompt_user();
-		linesize = getline(&line, &bufsize, stdin);
-		if (linesize < 0)
-			break;
-		info.ln_count++;
-		if (line[linesize - 1] == '\n')
-			line[linesize - 1] = '\0';
-		command = tokenizer(line);
-		if (command == NULL || *command == NULL || **command == '\0')
-			continue;
-		if (checker(command, line))
-			continue;
-		path = find_path();
-		paths = tokenizer(path);
-		pathcommand = test_path(paths, command[0]);
-		if (!pathcommand)
-			perror(av[0]);
-		else
-			execution(pathcommand, command);
+		_puts("\n#cisfun$ ");
 	}
-	if (linesize < 0 && flags.interactive)
-		write(STDERR_FILENO, "\n", 1);
-	free(line);
+}
+
+/**
+* _EOF - handles the End of File
+* @len: return value of getline function
+* @buff: buffer
+ */
+void _EOF(int len, char *buff)
+{
+	(void)buff;
+	if (len == -1)
+	{
+		if (isatty(STDIN_FILENO))
+		{
+			_puts("\n");
+			free(buff);
+		}
+		exit(0);
+	}
+}
+/**
+  * _isatty - verif if terminal
+  */
+
+void _isatty(void)
+{
+	if (isatty(STDIN_FILENO))
+		_puts("#cisfun$ ");
+}
+/**
+ * main - Shell
+ * Return: 0 on success
+ */
+
+int main(void)
+{
+	ssize_t len = 0;
+	char *buff = NULL, *value, *pathname, **arv;
+	size_t size = 0;
+	list_path *head = '\0';
+	void (*f)(char **);
+
+	signal(SIGINT, sig_handler);
+	while (len != EOF)
+	{
+		_isatty();
+		len = getline(&buff, &size, stdin);
+		_EOF(len, buff);
+		arv = splitstring(buff, " \n");
+		if (!arv || !arv[0])
+			execute(arv);
+		else
+		{
+			value = _getenv("PATH");
+			head = linkpath(value);
+			pathname = _which(arv[0], head);
+			f = checkbuild(arv);
+			if (f)
+			{
+				free(buff);
+				f(arv);
+			}
+			else if (!pathname)
+				execute(arv);
+			else if (pathname)
+			{
+				free(arv[0]);
+				arv[0] = pathname;
+				execute(arv);
+			}
+		}
+	}
+	free_list(head);
+	freearv(arv);
+	free(buff);
 	return (0);
 }
