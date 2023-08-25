@@ -1,49 +1,49 @@
-#include "holberton.h"
+#include "main.h"
 /**
- * execute_proc - similar to puts in C
- * @cmd: a pointer the integer we want to set to 402
+ * _execute - executes a command
+ * @argv: Arrays of strings
+ * @av: Array of inputted commands
+ * @env: Environment variable
+ * @counter: Variable to keep count
+ * @input: Command user entered(newline removed)
  *
- * Return: int
+ * Return: 0 on success
  */
-void execute_proc(char **cmd)
+int _execute(char **argv, char **av, char **env, int counter, char *input)
 {
+	struct stat buffer;
+	pid_t pid;
+	int status;
+	char *path;
 
-	char *parametro = (*(cmd + 1));
-	char *s, *slash = "/";
-	char *o;
-
-	char *vartoprint = *cmd;
-	char *argv[4];
-
-	if ((access(cmd[0], F_OK) == 0))
+	if (argv == NULL || av == NULL)
+		return (-1);
+	path = _locate(av[0], env);
+	if (path == NULL)
 	{
-		argv[0] = cmd[0];
-		argv[1] = parametro;
-		argv[2] = ".";
-		argv[3] = NULL;
-
-		if (execve(argv[0], argv, NULL) == -1)
+		print_error(argv, av, counter, input);
+		return (0);
+	}
+	pid = fork();
+	if (pid == -1)
+	{
+		perror("Error forking");
+		return (-1);
+	}
+	if (pid == 0)
+	{
+		if (stat(path, &buffer) == -1)
 		{
-			perror("Error");
+			print_error(argv, av, counter, input);
+			return (0);
 		}
+		else
+			execve(path, av, env);
 	}
 	else
 	{
-		o = find_command(vartoprint);
-
-		slash = str_concat(o, slash);
-
-		s = str_concat(slash, *cmd);
-
-		argv[0] = s;
-		argv[1] = parametro;
-		argv[2] = ".";
-		argv[3] = NULL;
-
-		if (execve(argv[0], argv, NULL) == -1)
-		{
-			perror("Error");
-		}
+		wait(&status);
+		free(path);
 	}
+	return (1);
 }
-

@@ -1,64 +1,94 @@
-simple_shell project repository
-----------------------------------------------
-This repository contains the files for Holberton's simple_shell. It can be compiled using GCC and will execute a simple shell that can be used for some basic tasks and programs most commonly found in the /bin/ folder.
+<h1 align="center">
+  0x16. C - Simple Shell
+</h1>
 
-Pre-requisites
--------------------------------------------------------------
-Authorized functions and macros:
-access (man 2 access)
-chdir (man 2 chdir)
-close (man 2 close)
-closedir (man 3 closedir)
-execve (man 2 execve)
-exit (man 3 exit)
-_exit (man 2 _exit)
-fflush (man 3 fflush)
-fork (man 2 fork)
-free (man 3 free)
-getcwd (man 3 getcwd)
-getline (man 3 getline)
-isatty (man 3 isatty)
-kill (man 2 kill)
-malloc (man 3 malloc)
-open (man 2 open)
-opendir (man 3 opendir)
-perror (man 3 perror)
-read (man 2 read)
-readdir (man 3 readdir)
-signal (man 2 signal)
-stat (__xstat) (man 2 stat)
-lstat (__lxstat) (man 2 lstat)
-fstat (__fxstat) (man 2 fstat)
-strtok (man 3 strtok)
-wait (man 2 wait)
-waitpid (man 2 waitpid)
-wait3 (man 2 wait3)
-wait4 (man 2 wait4)
-write (man 2 write)
-GCC command to compile:
-gcc -Wall -Werror -Wextra -pedantic *.c -o hsh
+<p align="center">
+   📄 🚀
+</p>
 
-This wil compile all the '.c' files and change the output's name to 'hsh'.
+<p align="center">
+  <strong>
+   Description
+  </strong>
+</p>
 
-Template to test output:
-============= $ ./hsh
+<p align="center">
+This project is an implementation of the shell created as a Milestone Project for the C code at ALX Africa Software Engineering. </br>
+The gates of shell is a project in the first trimester, that helps student to understand the advanced
+concepts behind the shell program include process, system call, bit manipulation, file managment, error handling ... </br>
+Shell is a simple UNIX command interpreter that replicates functionalities of the simple shell (sh). </br>
+This program was written entirely in C Language.
+</p>
 
-($)
+## COPYRIGHT
+Copyright (C) 2023 [**Melaku Tessemas**](https://github.com/Melakutes) </br>
+All rights reserved
 
-hsh main.c shell.c
+ ## Description :
+This is a shell written in [C](https://en.wikipedia.org/wiki/C_(programming_language)).
+It is based on [the Thompson Shell](https://en.wikipedia.org/wiki/Thompson_shell).
 
-$ exit $
+## Environment :
 
-After you clone this repository and compile the program with the command above, you will generate a file called hsh that can be executed by entering ./hsh in your shell.
+Our shell was built and tested on  Ubuntu 20.04
+Basic Ubuntu 20.04, with vim, emacs, curl, wget and all needed for Foundations
 
-The output after the program is executed should look something like this:
+## Features
+* Display a prompt and wait for the user to type a command. A command line always ends with a new line.
+* If an executable cannot be found, print an error message and display the prompt again.
+* Handle errors.
+* Hndling the “end of file” condition (Ctrl+D)
+* Hanling the command line with arguments
+* Handle the PATH
+* Support the exit features and the exit status
+* Handle the Ctrl-C to not terminate the shell
+* Handling the command seperator `;`
+* Handling `&&` and `||` logical operators
+* Handle variable replacements `$?` and `$$`
+* Handle the comments `#`
+* Support the history feature
+* Support the file input
 
-$|
-Where you will get a prompt in the shape of a dollar sign so you can start typing commands into your shell. Agood example of how it should execute is the command shown above were the user enters 'ls' and then gets a list of the directory contents.
+## Builtins
+Our shell has support for the following built-in commands:
 
-Function Prototypes:
-Brief description of functions contained in project:
+| Command             | Definition                                                                                |
+| ------------------- | ----------------------------------------------------------------------------------------- |
+| exit [n]            | Exit the shell, with an optional exit status, n.                                          |
+| env                 | Print the environment.                                                                    |
+| setenv [var][value] | Set an environment variable and value. If the variable exists, the value will be updated. |
+| alias[name[='value]]| Reads aliases name                                                                        |
+| unsetenv [var]      | Remove an environment variable.                                                           |
+| cd [dir]            | Change the directory.                                                                     |
+| help [built-in]     | Read documentation for a built-in.                                                        |
 
-_strcmpdir : compares strings to find dir. find_command : finds command to execute in path routes. charput : writes the character like putchar. place : similar to puts in C. _strlen : string length. str_concat : concatenate strings. lookforslash : identify if first char is a '/'. compareExit : checks if user typed exit. compareEnv : checks if user typed env. execute_proc : receives command and args from getline to be executed. identify_string : returns pointer with folder address. prompt : infinite loop with fork to keep prompt going. controlC: avoid program closing when pressing ctrl + c. main: initialize program.
 
-README.md: this.
+## Installation : Getting HSH
+
+Clone the below repository and compile the files into an executable using the GCC compiler.
+```
+https://github.com/Melakutes/simple_shell.git
+```
+
+### Basic usage :bulb:
+- First, Fork this Repository [Learn how to fork repo](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo).
+- Then Clone [Learn how to clone ](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository).
+- Create an executable by running the following command:
+- `gcc -Wall -Werror -Wextra -pedantic *.c -o hsh`
+- From there, type in the following command and press your enter button.
+- `./hsh`
+- Final step: ENJOY!
+
+
+## Example :computer:
+```
+ls -la
+```
+![114757753-e50c2180-9d64-11eb-95ea-fb9bba776c8c](https://user-images.githubusercontent.com/57016982/186711943-65abad4d-eedf-4d65-947d-3710e189bdee.png)
+
+## Contributors :
+* [**Melaku Tessema**](https://github.com/Melakutes)
+
+## Acknowledgments :
+- The creators of the C language.
+- Betty Holberton | Alx-Africa .
